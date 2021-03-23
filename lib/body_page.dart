@@ -36,19 +36,36 @@ class _BodyPageState extends State<BodyPage> {
   List<String> Na = [], Re = [], Ru = [], Te = [];
   List<List<Widget>> disdata = [], disNum = [];
 
-  final arrivalTime = TextEditingController();
-  List<int> arrivalList = [2, 1, 4];
-  List<int> bustList = [2,5,12];
-  final bustTime = TextEditingController();
-  List<List<int>> DATATA = [[1, 2], [2,4], [3,6], [44,2], [12,5]];
+  List<int> arrivalList =[];
+  List<int> bustList =[];
 
-  // List<List<num>> inputData() {
-  //   var rawInput = getData(dataChoice).split(";");
-  //   return List.generate(rawInput.length, (i) {
-  //     var str = rawInput[i].split(",");
-  //     return [int.parse(str[0]), int.parse(str[1])];
-  //   });
-  // }
+  late List<List<int>> inputData= [arrivalList,bustList];
+  TextEditingController? _controller;
+  late TextEditingController bustController;
+  String choiceText = "";
+
+  void initState(){
+    _controller = TextEditingController(text: choiceText);
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _controller!.dispose();
+    super.dispose();
+  }
+
+  List<List<num>> parseComputationProcesses() {
+    var rawInput = choiceText.split(";");
+    return List.generate(rawInput.length, (i) {
+      var str = rawInput[i].split(",");
+      return [int.parse(str[0]), int.parse(str[1])];
+    });
+  }
+
+  List<List<int>> DATATA = [[1,3],[2,5],[6,1]];
+
 
   late final int start = 3;
   late final int end = 6;
@@ -65,6 +82,7 @@ class _BodyPageState extends State<BodyPage> {
             Column(
               children: [
                 Container(
+                  margin: EdgeInsets.only(bottom: 50),
                   width: 200,
                   child: DropdownButton<String>(
                     isDense: true,
@@ -95,6 +113,21 @@ class _BodyPageState extends State<BodyPage> {
                     }).toList(),
                   ),
                 ),
+                SizedBox(
+                  height: 50,
+                  child: TextField(
+                    cursorColor: Colors.orangeAccent,
+                    controller: _controller,
+                    decoration: InputDecoration(
+                      hintText: "Enter your own process array",
+                    ),
+                    onChanged: (s) {
+                      setState(() {
+                        choiceText = s;
+                      });
+                    },
+                  ),
+                ),
                 Padding(padding: const EdgeInsets.only(top: 200.0),
                   child:Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -122,7 +155,7 @@ class _BodyPageState extends State<BodyPage> {
                     ),
                   ),
                 ),
-               // tableUI()
+               tableUI()
               ],
             ),
           ),
@@ -130,94 +163,8 @@ class _BodyPageState extends State<BodyPage> {
             child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,children: [
               Column(children: [
                 button(onPressed: addRow, buttonText: 'Add Process', isEnabled: true,),
-                //button(onPressed: () => {FCFS([[0],[1]])}, buttonText: 'Gantt Chart', isEnabled: true),
-                button(onPressed: (){Navigator.push(context, MaterialPageRoute(builder: (context) => FCFS(DATATA,arrivalList,bustList)));}, buttonText: 'Gantt Chart', isEnabled: true,),
+                button(onPressed: (){Navigator.push(context, MaterialPageRoute(builder: (context) => FCFS(parseComputationProcesses())));}, buttonText: 'Gantt Chart', isEnabled: true,),
                 button(onPressed: () {print("Average WT = 0.00");}, buttonText: 'Average WT = ' + _avg_wt.toStringAsFixed(2), isEnabled: false,),
-                /*Column(children: [
-                  SizedBox(
-                    height: 50,
-                    child: Row(
-                      children: [
-                        Flexible(
-                        flex: end - start,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.blue,
-                            border: Border(
-                              right: BorderSide(),
-                              left: BorderSide(color: Colors.black.withAlpha(start == 0 ? 255 : 0)),
-                            ),
-                          ),
-                          child: Stack(
-                            clipBehavior: Clip.hardEdge,
-                            children: [
-                              Center(
-                                child: Text(
-                                  'text',
-                                ),
-                              ),
-                              Positioned(
-                                right: 0,
-                                bottom: -20,
-                                child: Text(
-                                  end.toString(),
-                                  style: GoogleFonts.sourceCodePro(),
-                                ),
-                              ),
-                              Positioned(
-                                left: 0,
-                                bottom: -20,
-                                child: Text(
-                                  start == 0 ? '0' : '',
-                                  style: GoogleFonts.sourceCodePro(),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                        Flexible(
-                          flex: end - start,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.blue,
-                              border: Border(
-                                right: BorderSide(),
-                                left: BorderSide(color: Colors.black.withAlpha(start == 0 ? 255 : 0)),
-                              ),
-                            ),
-                            child: Stack(
-                              clipBehavior: Clip.hardEdge,
-                              children: [
-                                Center(
-                                  child: Text(
-                                    'text',
-                                  ),
-                                ),
-                                Positioned(
-                                  right: 0,
-                                  bottom: -20,
-                                  child: Text(
-                                    end.toString(),
-                                    style: GoogleFonts.sourceCodePro(),
-                                  ),
-                                ),
-                                Positioned(
-                                  left: 0,
-                                  bottom: -20,
-                                  child: Text(
-                                    start == 0 ? '0' : '',
-                                    style: GoogleFonts.sourceCodePro(),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],)*/
               ],),
               Column(children: [
                 button(onPressed: deleteRow, buttonText: 'Delete Process', isEnabled: true,),
@@ -290,20 +237,24 @@ class _BodyPageState extends State<BodyPage> {
 
     datas.add(['0', '0', '0', '0', '0']);
 
+
     rowList.add(DataRow(cells: <DataCell>[
       DataCell(Text('P' + (counter - 1).toString(),)),
       DataCell(TextField(
-        //controller: arrivalTime,
+//        controller: arrivalController,
         maxLines: 1,
         textAlign: TextAlign.center,
         keyboardType: TextInputType.number,
-        // style: TextStyle(color: Colors.white),
+
         onChanged: (val) {
           setState(() {
+            //arrivalList[t] = int.parse(val);
             datas[t][0] = val;
             data[t][0] = int.parse(val);
             calculate();
           });
+          //arrivalList.add(int.parse(arrivalController!.text));
+          //arrivalController.clear();
         },
       )),
       DataCell(TextField(
@@ -313,6 +264,8 @@ class _BodyPageState extends State<BodyPage> {
         keyboardType: TextInputType.number,
         // style: TextStyle(color: Colors.white),
         onChanged: (val) {
+          bustList.add(int.parse(val));
+          //bustList[t] = int.parse(val);
           datas[t][1] = val;
           data[t][1] = int.parse(val);
           setState(() {
