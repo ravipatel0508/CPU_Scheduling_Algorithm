@@ -1,44 +1,29 @@
 
+import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 
 
-Widget FCFS(List<List<num>> processes, List<int> arrivalList, List<int> bustList) {
+Widget FCFS(List<List<num>> processes) {
+  StringBuffer log = new StringBuffer();
   num totalTime = 0;
   num count = 1;
   num totalWait = 0;
-  StringBuffer log = new StringBuffer();
-  //List<List<int>> DATATA= [[1, 2], [2,4], [3,6]];
+
+  var delayProcess = [0, double.infinity, -1];
+
+  List<num> currentProcess = delayProcess;
 
   List<CpuProcessBar> resList = [];
-
-  // for(int i=0; i<arrivalList.length; i++){
-  //   if(int.parse(arrivalList[0].toString()) > totalTime){
-  //     int time = int.parse(arrivalList[0].toString()) - totalTime as int;
-  //     log.write("\nWaiting for $time");
-  //     resList.add(new CpuProcessBar(totalTime as int, totalTime + time));
-  //     totalTime += time;
-  //   }
-  //   if(int.parse(arrivalList[1].toString()) < totalTime){
-  //     log.write("\nP$count is waiting for ${totalTime - int.parse(arrivalList[0].toString())}");
-  //     totalWait += totalTime - int.parse(arrivalList[0].toString());
-  //   }
-  //   log.write("\nRunning P$count");
-  //   resList.add(CpuProcessBar(totalTime as int, totalTime + int.parse(arrivalList[0].toString())));
-  //   totalTime += int.parse(arrivalList[1].toString());
-  //   count += 1;
-  // }
-  // log.write("\n$DATATA $totalWait");
-  // log.write("\nFinished FCFS");
-
-  // //List<Color> colors = List.generate(processes.length, (index) => Color((Random(index).nextDouble() * 0xFFFFFF).toInt()).withOpacity(.2));
+  List<Color> colors = List.generate(processes.length, (index) => Color((Random(index).nextDouble() * 0xFFFFFF).toInt()).withOpacity(.2));
   for (var process in processes) {
     if (process[0] > totalTime) {
       int time = process[0] - totalTime as int;
       log.write("\nWaiting for $time");
-      resList.add(new CpuProcessBar(totalTime as int, totalTime + time));
+      resList.add(new CpuProcessBar(totalTime as int, totalTime + time, "", Colors.cyan[100]!));
       //resList.add(new CpuProcessBar(totalTime as int, totalTime + time, "", process[1] != -1 ? colors[process[1] as int] : Colors.cyan[100]!));
       totalTime += time;
     }
@@ -50,27 +35,22 @@ Widget FCFS(List<List<num>> processes, List<int> arrivalList, List<int> bustList
       //color = colors;
     }
     log.write("\nRunning P$count");
-    resList.add(CpuProcessBar(totalTime as int, totalTime + (process[0] as int)));
+    resList.add(CpuProcessBar(totalTime as int, totalTime + (process[1] as int), "P$count", colors[1]));
     //resList.add(CpuProcessBar(totalTime as int, totalTime + (process[1] as int), "P$count", currentProcess[1] != -1 ? colors[currentProcess[1] as int] : Colors.cyan[100]!));
     totalTime += process[1] as int;
     count += 1;
   }
   log.write("\n$processes $totalWait");
   log.write("\nFinished FCFS");
-
-  // resList.add(new CpuProcessBar(3));
-  // resList.add(CpuProcessBar(10));
-  // resList.add(CpuProcessBar(15));
-
-  return CpuResult(resList,log);
+  return CpuResult(totalWait / processes.length, resList, log);
 }
 
 class CpuResult extends StatelessWidget {
-  final double avgWait =3;
+  final double avgWait;
   late final List<CpuProcessBar> list;
   final StringBuffer gg;
 
-  CpuResult(this.list, this.gg);
+  CpuResult(this.avgWait,this.list, this.gg);
 
   @override
   Widget build(BuildContext context) {
@@ -104,7 +84,6 @@ class CpuResult extends StatelessWidget {
                 borderRadius: BorderRadius.all(Radius.circular(10.0)),
                 color: Colors.blue[100],
               ),
-
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Text(gg.toString()),
@@ -120,10 +99,10 @@ class CpuResult extends StatelessWidget {
 class CpuProcessBar extends StatelessWidget {
   final int start;
   final int end;
-  //final int flex;
+  final String text;
+  final Color color;
 
-  CpuProcessBar(this.start, this.end);
-
+  CpuProcessBar(this.start, this.end, this.text, this.color);
 
   @override
   Widget build(BuildContext context) {
@@ -131,19 +110,22 @@ class CpuProcessBar extends StatelessWidget {
       flex: end - start,
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.amber,
+          color: color,
           border: Border(
             right: BorderSide(),
             left: BorderSide(color: Colors.black.withAlpha(start == 0 ? 255 : 0)),
           ),
         ),
         child: Stack(
-          clipBehavior: Clip.hardEdge,
+          clipBehavior: Clip.none,
           children: [
             Center(
               child: Text(
-                (end-start).toString(),
-                //text,
+                text,
+                style: GoogleFonts.sourceCodePro(
+                  color: color.computeLuminance() > 0.5 ? Colors.black : Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
             Positioned(

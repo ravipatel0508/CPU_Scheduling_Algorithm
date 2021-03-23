@@ -9,6 +9,7 @@ import 'package:scheduling_algorithm/gantChart.dart';
 import 'appTheme.dart';
 import 'colors.dart';
 
+
 class BodyPage extends StatefulWidget {
   @override
   _BodyPageState createState() => _BodyPageState();
