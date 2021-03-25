@@ -2,10 +2,8 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:scheduling_algorithm/RR_GantChart.dart';
-import 'package:scheduling_algorithm/SJF_GantChart.dart';
 import 'package:scheduling_algorithm/button.dart';
-import 'package:scheduling_algorithm/FCFS_GantChart.dart';
+import 'package:scheduling_algorithm/GantChart.dart';
 
 import 'appTheme.dart';
 import 'colors.dart';
@@ -165,24 +163,28 @@ class _BodyPageState extends State<BodyPage> {
                         children: [
                           Column(
                             children: [
-                              button(
-                                onPressed: () {
-                                    if(dropDown == 1) {
-                                      Navigator.push(context, MaterialPageRoute(
-                                          builder: (context) =>
-                                              FCFS(parseComputationProcesses())));
-                                    }else if(dropDown == 2){
-                                      Navigator.push(context, MaterialPageRoute(
-                                          builder: (context) =>
-                                              SJF(parseComputationProcesses())));
-                                    }else{
-                                      Navigator.push(context, MaterialPageRoute(
-                                          builder: (context) =>
-                                              RR(parseComputationProcesses(),RR_WINDOW)));
-                                    }
-                                  },
-                                buttonText: 'Gantt Chart',
-                                isEnabled: true
+                              Hero(
+                                tag: 'dash',
+                                transitionOnUserGestures: true,
+                                child: button(
+                                  onPressed: () {
+                                      if(dropDown == 1) {
+                                        Navigator.push(context, MaterialPageRoute(
+                                            builder: (context) =>
+                                                FCFS(parseComputationProcesses())));
+                                      }else if(dropDown == 2){
+                                        Navigator.push(context, MaterialPageRoute(
+                                            builder: (context) =>
+                                                SJF(parseComputationProcesses())));
+                                      }else{
+                                        Navigator.push(context, MaterialPageRoute(
+                                            builder: (context) =>
+                                                RR(parseComputationProcesses(),RR_WINDOW)));
+                                      }
+                                    },
+                                  buttonText: 'Gantt Chart',
+                                  isEnabled: true
+                                ),
                               ),
                             ],
                           ),
