@@ -1,14 +1,17 @@
-
 import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:scheduling_algorithm/RR_GantChart.dart';
+import 'package:scheduling_algorithm/SJF_GantChart.dart';
 import 'package:scheduling_algorithm/button.dart';
-import 'package:scheduling_algorithm/gantChart.dart';
+import 'package:scheduling_algorithm/FCFS_GantChart.dart';
 
 import 'appTheme.dart';
 import 'colors.dart';
 
+enum DataChoice { First, Second, Third, Own }
+const int RR_WINDOW = 3;
 
 class BodyPage extends StatefulWidget {
   @override
@@ -17,43 +20,188 @@ class BodyPage extends StatefulWidget {
 
 class _BodyPageState extends State<BodyPage> {
   String dropdownValue = 'FCFS';
-  List<String> listItem = ['FCFS', 'SJF', 'SRTN'];
-  List<TableRow> tableCellUi = [];
-  int count = 0;
+  List<String> listItem = ['FCFS', 'SJF', 'RR'];
+  late int dropDown = 1;
 
-  String complitionTime = '0';
-
-
-  double _avg_tat = 0,
-      _avg_wt = 0;
-  var counter = 0;
-  List<DataRow> rowList = [];
-  List<List<int>> data = [];
-  List<List<String>> datas = [];
-  List<List<int>> cardv = [];
-  List<List<String>> cardvs = [];
-  List<List<bool>> readyq = [];
-  List<String> Na = [], Re = [], Ru = [], Te = [];
-  List<List<Widget>> disdata = [], disNum = [];
-
-  List<int> arrivalList =[];
-  List<int> bustList =[];
-
-  late List<List<int>> inputData= [arrivalList,bustList];
+  DataChoice? dataChoice = DataChoice.First;
   TextEditingController? _controller;
-  late TextEditingController bustController;
-  String choiceText = "";
+  late List<bool> selectedAlgo;
+  bool hasResult = false;
+  bool error = false;
+  String choiceText = "0,5;6,9;6,5;15,10";
+  Widget? resWidget;
+  FocusNode focus = FocusNode();
 
-  void initState(){
+  @override
+  void initState() {
     _controller = TextEditingController(text: choiceText);
-
+    resWidget = Padding(padding: EdgeInsets.all(50.0));
+    focus.addListener(() {
+      if (focus.hasFocus) setState(() => dataChoice = DataChoice.Own);
+    });
     super.initState();
   }
 
   @override
   void dispose() {
-    _controller!.dispose();
+    focus.dispose();
     super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constraints) =>
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: ConstrainedBox(
+                constraints: BoxConstraints.tightFor(
+                    width: max(700, constraints.maxWidth)),
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          DropdownButton<String>(
+                            isDense: true,
+                            value: dropdownValue,
+                            dropdownColor:
+                                light ? lightButtonColor : darkButtonColor,
+                            icon: const Icon(Icons.arrow_drop_down),
+                            iconSize: 24,
+                            elevation: 16,
+                            //style: const TextStyle(color: Colors.white),
+                            underline: Container(
+                              height: 2,
+                              color: light ? lightButtonColor : darkButtonColor,
+                            ),
+                            onChanged: (String? newValue) {
+                              setState(() {
+                                dropdownValue = newValue!;
+                                if (dropdownValue == 'FCFS') {
+                                  dropDown = 1;
+                                } else if (dropdownValue == 'SJF') {
+                                  dropDown = 2;
+                                } else {
+                                  dropDown = 3;
+                                }
+                              });
+                            },
+                            items: listItem
+                                .map<DropdownMenuItem<String>>((String value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(value),
+                              );
+                            }).toList(),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 30,
+                      ),
+                      IntrinsicHeight(
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Flexible(
+                                child: Column(
+                              children: generateDataInputList(),
+                            )),
+                            Flexible(
+                                child: Padding(
+                              padding: const EdgeInsets.fromLTRB(0, 0, 20.0, 0),
+                              child: Column(
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.all(8.0),
+                                    child: Text(
+                                      "Process table",
+                                      style: TextStyle(fontSize: 18),
+                                    ),
+                                  ),
+                                  Flexible(
+                                    child: Builder(
+                                      builder: (context) {
+                                        List processes;
+                                        if (choiceText.isEmpty &&
+                                            dataChoice == DataChoice.Own) {
+                                          return const TableErrorContainer(
+                                            text: "Enter a process array",
+                                          );
+                                        }
+                                        try {
+                                          processes =
+                                              parseComputationProcesses();
+                                          processes[processes.length - 1][1];
+                                        } catch (e) {
+                                          return const TableErrorContainer(
+                                            text: "Faulty process array",
+                                          );
+                                        }
+                                        //return ProcessTable.fromProcessList(processes as List<List<num>>, "Arrival time", "Length", "Completion Time", "TAT",(int index) => "P${index + 1}");
+                                        return ProcessTable.fromProcessList(
+                                            processes as List<List<num>>,
+                                            "Arrival time",
+                                            "Length",
+                                            (int index) => "P${index + 1}");
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ))
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        height: 30,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Column(
+                            children: [
+                              button(
+                                onPressed: () {
+                                    if(dropDown == 1) {
+                                      Navigator.push(context, MaterialPageRoute(
+                                          builder: (context) =>
+                                              FCFS(parseComputationProcesses())));
+                                    }else if(dropDown == 2){
+                                      Navigator.push(context, MaterialPageRoute(
+                                          builder: (context) =>
+                                              SJF(parseComputationProcesses())));
+                                    }else{
+                                      Navigator.push(context, MaterialPageRoute(
+                                          builder: (context) =>
+                                              RR(parseComputationProcesses(),RR_WINDOW)));
+                                    }
+                                  },
+                                buttonText: 'Gantt Chart',
+                                isEnabled: true
+                              ),
+                            ],
+                          ),
+                          Column(
+                            children: [
+                              button(
+                                onPressed: () {},
+                                buttonText: 'Visualization',
+                                isEnabled: true,
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ));
   }
 
   List<List<num>> parseComputationProcesses() {
@@ -64,346 +212,235 @@ class _BodyPageState extends State<BodyPage> {
     });
   }
 
-  List<List<int>> DATATA = [[1,3],[2,5],[6,1]];
+  String getCpuData(DataChoice? valik) {
+    switch (valik) {
+      case DataChoice.First:
+        return "0,5;6,9;6,5;15,10";
+      case DataChoice.Second:
+        return "0,2;0,4;12,4;15,5;21,10";
+      case DataChoice.Third:
+        return "5,6;6,9;11,3;12,7";
+      default:
+        return "";
+    }
+  }
 
+  String getData(DataChoice? choice) {
+    if (choice == DataChoice.Own) {
+      return choiceText;
+    }
+    return getCpuData(choice);
+  }
 
-  late final int start = 3;
-  late final int end = 6;
+  List<Widget> generateDataInputList() {
+    List<Widget> inputList = List.generate(
+      DataChoice.values.length,
+      (index) => RadioListTile<DataChoice>(
+        title: Text(
+            index != 3 ? getData(DataChoice.values[index]) : "Create your own"),
+        value: DataChoice.values[index],
+        activeColor: Colors.blueAccent,
+        groupValue: dataChoice,
+        onChanged: (DataChoice? value) {
+          choiceText = getData(DataChoice.values[index]);
+          setState(() {
+            dataChoice = value;
+            if (value != DataChoice.Own) {
+              focus.unfocus();
+              error = false;
+            } else {
+              focus.requestFocus();
+              choiceText = _controller!.text;
+            }
+            //for (int i = 0; i < selectedAlgo.length; i++) if (selectedAlgo[i]) runAlgo(i);
+          });
+        },
+      ),
+    );
+    inputList.add(Flexible(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 20.0),
+        child: TextField(
+          cursorColor: Colors.blueAccent,
+          focusNode: focus,
+          controller: _controller,
+          decoration: InputDecoration(
+            hintText: "Enter your own process array",
+            errorText: error ? "Faulty process array" : null,
+          ),
+          onChanged: (s) {
+            setState(() {
+              choiceText = s;
+              //for (int i = 0; i < selectedAlgo.length; i++) if (selectedAlgo[i]) runAlgo(i);
+            });
+          },
+        ),
+      ),
+    ));
+    inputList.insert(
+        0,
+        const Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Text(
+            "Choose a process array",
+            style: TextStyle(fontSize: 18),
+          ),
+        ));
+    return inputList;
+  }
+}
 
+class TableErrorContainer extends StatelessWidget {
+  const TableErrorContainer({
+    Key? key,
+    this.text,
+  }) : super(key: key);
+
+  final String? text;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.all(20),
-      child: Row(
-        children: [
-          Expanded(
-            child:
-            Column(
-              children: [
-                Container(
-                  margin: EdgeInsets.only(bottom: 50),
-                  width: 200,
-                  child: DropdownButton<String>(
-                    isDense: true,
-                    value: dropdownValue,
-                    dropdownColor: light ? lightButtonColor : darkButtonColor,
-                    icon: const Icon(Icons.arrow_drop_down),
-                    iconSize: 24,
-                    elevation: 16,
-                    //style: const TextStyle(color: Colors.white),
-                    underline: Container(height: 2,
-                      color: light ? lightButtonColor : darkButtonColor,),
-                    onChanged: (String? newValue) {
-                      setState(() {
-                        dropdownValue = newValue!;
-                        if (dropdownValue == 'FCFS') {
-                          FCFS;
-                        }
-                        else if (dropdownValue == 'SJF') {}
-                        else {}
-                      });
-                    },
-                    items: listItem.map<DropdownMenuItem<String>>((
-                        String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(value),
-                      );
-                    }).toList(),
-                  ),
-                ),
-                SizedBox(
-                  height: 50,
-                  child: TextField(
-                    cursorColor: Colors.orangeAccent,
-                    controller: _controller,
-                    decoration: InputDecoration(
-                      hintText: "Enter your own process array",
-                    ),
-                    onChanged: (s) {
-                      setState(() {
-                        choiceText = s;
-                      });
-                    },
-                  ),
-                ),
-                Padding(padding: const EdgeInsets.only(top: 200.0),
-                  child:Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: DataTable(
-                      columns: [
-                        DataColumn(label: Text('Process  ',),
-                            numeric: false),
-                        DataColumn(
-                            label: Text('AT',),
-                            numeric: true),
-                        DataColumn(
-                            label: Text('BT',),
-                            numeric: true),
-                        DataColumn(
-                            label: Text('CT',),
-                            numeric: true),
-                        DataColumn(
-                            label: Text('TAT',),
-                            numeric: true),
-                        DataColumn(
-                            label: Text('WT',),
-                            numeric: true),
-                      ],
-                      rows: rowList,
-                    ),
-                  ),
-                ),
-               tableUI()
-              ],
-            ),
-          ),
-          Expanded(
-            child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,children: [
-              Column(children: [
-                button(onPressed: addRow, buttonText: 'Add Process', isEnabled: true,),
-                button(onPressed: (){Navigator.push(context, MaterialPageRoute(builder: (context) => FCFS(parseComputationProcesses())));}, buttonText: 'Gantt Chart', isEnabled: true,),
-                button(onPressed: () {print("Average WT = 0.00");}, buttonText: 'Average WT = ' + _avg_wt.toStringAsFixed(2), isEnabled: false,),
-              ],),
-              Column(children: [
-                button(onPressed: deleteRow, buttonText: 'Delete Process', isEnabled: true,),
-                button(onPressed: Gant, buttonText: 'Visualization', isEnabled: true,),
-                button(onPressed: () {print("Average TAT = 0.00");}, buttonText: 'Average TAT = ' + _avg_tat.toStringAsFixed(2), isEnabled: false,),
-              ],),
-            ],
-            ),
-          ),
-        ],
-      ),
+      color: Colors.blue[100],
+      alignment: Alignment.center,
+      child: Text(text!),
     );
   }
+}
 
+class TableCellPadded extends StatelessWidget {
+  final EdgeInsets? padding;
+  final Widget child;
+  final TableCellVerticalAlignment? verticalAlignment;
 
+  const TableCellPadded(
+      {Key? key, this.padding, required this.child, this.verticalAlignment})
+      : super(key: key);
 
-  Widget tableUI() {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
+  @override
+  TableCell build(BuildContext context) => TableCell(
+      verticalAlignment: verticalAlignment,
+      child: Padding(padding: padding ?? EdgeInsets.all(5.0), child: child));
+}
+
+class ProcessTable extends StatelessWidget {
+  final List<TableRow> rows;
+  static const TextStyle heading = TextStyle(
+    fontWeight: FontWeight.bold,
+    color: Colors.blueAccent,
+  );
+
+  static ProcessTable fromProcessList(List<List<num>> processes,
+      String firstProperty, String secondProperty, Function generateID) {
+    List<TableRow> rowList = List.generate(
+      processes.length,
+      (index) {
+        List<TableCellPadded> cellList = List.generate(
+            processes[index].length,
+            (secondIndex) => TableCellPadded(
+                child: Text(processes[index][secondIndex].toString())));
+        cellList.insert(0, TableCellPadded(child: Text(generateID(index))));
+        // cellList.insert(3, TableCellPadded(child: Text("00")));
+        // cellList.insert(4, TableCellPadded(child: Text("00")));
+        return TableRow(
+          children: cellList,
+        );
+      },
+    );
+    rowList.insert(
+        0,
+        TableRow(
+          children: [
+            const TableCellPadded(
+              child: Text(
+                "ID",
+                style: heading,
+              ),
+            ),
+            TableCellPadded(
+              child: Text(
+                firstProperty,
+                style: heading,
+              ),
+            ),
+            TableCellPadded(
+              child: Text(
+                secondProperty,
+                style: heading,
+              ),
+            ),
+            // TableCellPadded(
+            //   child: Text(
+            //     thirdProperty,
+            //     style: heading,
+            //   ),
+            // ),
+            // TableCellPadded(
+            //   child: Text(
+            //     fourthProperty,
+            //     style: heading,
+            //   ),
+            // ),
+          ],
+        ));
+    return ProcessTable(rows: rowList);
+  }
+
+  const ProcessTable({
+    Key? key,
+    required this.rows,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: Colors.blue[100],
       child: Table(
-        //border: TableBorder.all(color: Colors.black),
-        children: tableCellUi,
+        border: TableBorder.all(),
+        children: rows,
       ),
     );
+  }
 }
 
-  void Gant() {
-    cardv.clear();
-    cardvs.clear();
-    readyq.clear();
+class AlgoResult extends StatelessWidget {
+  final Widget? resultWidget;
+  final StringBuffer log;
 
-    int cal = 0, st = 0, tt = 0;
-    List<bool> vis;
-    vis = new List<bool>.filled(counter, false);
-    while (cal != counter) {
-      readyq.add(List.filled(counter, false));
-      var mn = 100, loc = 0;
-      for (var i = 0; i < counter; ++i) {
-        if (data[i][0] < mn && !vis[i]) {
-          mn = data[i][0];
-          loc = i;
-        }
-        if (!vis[i] && st >= data[i][0]) {
-          readyq[tt][i] = true;
-        }
-      }
-      cardv.add([0, 0, 0, 0]);
-      cardvs.add(['0', '0', '0', '0']);
-      vis[loc] = true;
-      cal++;
-      cardv[tt][0] = loc;
-      cardv[tt][1] = max(data[loc][0], st);
-      data[loc][2] = max(data[loc][0], st) + data[loc][1];
-      st = data[loc][2];
-      cardv[tt][2] = data[loc][2];
-      cardv[tt][3] = 1;
-      data[loc][3] = data[loc][2] - data[loc][0];
-      data[loc][4] = data[loc][3] - data[loc][1];
-      for (int i = 0; i < 5; ++i) datas[loc][i] = data[loc][i].toString();
-      for (int i = 0; i < 4; ++i) cardvs[tt][i] = cardv[tt][i].toString();
-      tt++;
-    }
-  }
+  const AlgoResult(this.resultWidget, this.log);
 
-  void addRow(){
-  setState(() {
-    var t = counter;
-    counter++;
-    data.add([0, 0, 0, 0, 0]);
-
-    datas.add(['0', '0', '0', '0', '0']);
-
-
-    rowList.add(DataRow(cells: <DataCell>[
-      DataCell(Text('P' + (counter - 1).toString(),)),
-      DataCell(TextField(
-//        controller: arrivalController,
-        maxLines: 1,
-        textAlign: TextAlign.center,
-        keyboardType: TextInputType.number,
-
-        onChanged: (val) {
-          setState(() {
-            //arrivalList[t] = int.parse(val);
-            datas[t][0] = val;
-            data[t][0] = int.parse(val);
-            calculate();
-          });
-          //arrivalList.add(int.parse(arrivalController!.text));
-          //arrivalController.clear();
-        },
-      )),
-      DataCell(TextField(
-        //controller: bustTime,
-        maxLines: 1,
-        textAlign: TextAlign.center,
-        keyboardType: TextInputType.number,
-        // style: TextStyle(color: Colors.white),
-        onChanged: (val) {
-          bustList.add(int.parse(val));
-          //bustList[t] = int.parse(val);
-          datas[t][1] = val;
-          data[t][1] = int.parse(val);
-          setState(() {
-            calculate();
-          });
-        },
-      )),
-      DataCell(Text(datas[t][2],
-      )),
-      DataCell(Text(datas[t][3],
-      )),
-      DataCell(Text(datas[t][4],
-      )),
-    ]));
-  });
-}
-
-  void deleteRow(){
-    setState(() {
-      counter--;
-      rowList.removeLast();
-      data.removeLast();
-      datas.removeLast();
-      calculate();
-    });
-  }
-
-  void calculate() {
-    int cal = 0, st = 0;
-    List<bool> vis;
-    vis = new List<bool>.filled(counter, false);
-
-    while (cal != counter) {
-      var mn = 100, loc = 0;
-
-      for (var i = 0; i < counter; ++i) {
-        if (data[i][0] < mn && !vis[i]) {
-          mn = data[i][0];
-          loc = i;
-        }
-      }
-
-      vis[loc] = true;
-      cal++;
-      data[loc][2] = max(data[loc][0], st) + data[loc][1];
-      st = data[loc][2];
-      data[loc][3] = data[loc][2] - data[loc][0];
-      data[loc][4] = data[loc][3] - data[loc][1];
-
-      for (int i = 0; i < 5; ++i) datas[loc][i] = data[loc][i].toString();
-      int _sum = 0;
-
-      for (int i = 0; i < counter; ++i) _sum += data[i][3];
-      _avg_tat = _sum / counter;
-      _sum = 0;
-
-      for (int i = 0; i < counter; ++i) _sum += data[i][4];
-      _avg_wt = _sum / counter;
-      int t = loc;
-
-      rowList[loc] = DataRow(
-          cells: <DataCell>[
-            DataCell(Text('P' + t.toString(),)),
-            DataCell(TextField(
-              maxLines: 1,
-              //textAlign: TextAlign.center,
-              keyboardType: TextInputType.number,
-              onChanged: (val) {
-                setState(() {
-                  datas[t][0] = val;
-                  data[t][0] = int.parse(val);
-                  calculate();
-                });
-              },
-            )),
-            DataCell(TextField(
-              maxLines: 1,
-              textAlign: TextAlign.center,
-              keyboardType: TextInputType.number,
-              onChanged: (val) {
-                datas[t][1] = val;
-                data[t][1] = int.parse(val);
-                setState(() {
-                  calculate();
-                });
-              },
-            )),
-            DataCell(Text(datas[t][2],)),
-            DataCell(Text(datas[t][3],)),
-            DataCell(Text(datas[t][4],)),
-      ]);
-    }
-  }
-
-}
-
-
-// ignore: camel_case_types
-Widget processBar() {
-  late final int start =1;
-  late final int end =2;
-
-    return Flexible(
-        flex: end - start,
-        child: Container(
-          decoration: BoxDecoration(
-            color: Colors.blue,
-            border: Border(
-              right: BorderSide(),
-              left: BorderSide(color: Colors.black.withAlpha(start == 0 ? 255 : 0)),
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(20.0),
+      child: Container(
+        padding: EdgeInsets.all(10.0),
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10.0),
+            color: Colors.blue[200],
+            boxShadow: [BoxShadow(color: Colors.grey[900]!, blurRadius: 15)]),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            resultWidget!,
+            Container(
+              margin: EdgeInsets.fromLTRB(0.0, 50, 0.0, 0.0),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                color: Colors.blue[100],
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  log.toString(),
+                  style: GoogleFonts.sourceCodePro(),
+                  maxLines: 50,
+                ),
+              ),
             ),
-          ),
-          child: Stack(
-            clipBehavior: Clip.hardEdge,
-            children: [
-              Center(
-                child: Text(
-                  'text',
-                ),
-              ),
-              Positioned(
-                right: 0,
-                bottom: -20,
-                child: Text(
-                  end.toString(),
-                  style: GoogleFonts.sourceCodePro(),
-                ),
-              ),
-              Positioned(
-                left: 0,
-                bottom: -20,
-                child: Text(
-                  start == 0 ? '0' : '',
-                  style: GoogleFonts.sourceCodePro(),
-                ),
-              ),
-            ],
-          ),
+          ],
         ),
-      );
+      ),
+    );
+  }
 }

@@ -10,6 +10,8 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  AssetImage img = new AssetImage('assets/sun.png');
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -19,7 +21,33 @@ class _MyAppState extends State<MyApp> {
       home: Scaffold(
         appBar: AppBar(
           title: Center(child: Text('Scheduling Algorithms')),
-          actions: <Widget>[Switch(activeColor: Colors.grey,value: light, onChanged: (state){setState(() {light = state;});})],
+          actions: <Widget>[Switch(
+            activeThumbImage: AssetImage('assets/sun.png'),
+              inactiveThumbImage: AssetImage('assets/moon.png'),
+              activeTrackColor: Colors.white60,
+              activeColor: Colors.white,
+              value: light,
+              onChanged: (state){
+                setState(() {
+                  light = state;
+                  light ? img = AssetImage('assets/sun.png') : img = AssetImage('assets/moon.png');
+                });
+              }),
+        FlatButton(
+            onPressed: (){
+              setState(() {
+                if (light = false) {
+                  light = true ;
+
+                }else {
+                  light = false;
+                }
+              }
+              );
+            },
+            padding: EdgeInsets.all(20.0),
+            child: Image(image: img))
+          ],
         ),
         body: SafeArea(
             child: BodyPage()

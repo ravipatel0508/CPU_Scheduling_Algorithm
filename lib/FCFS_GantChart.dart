@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 
-
 Widget FCFS(List<List<num>> processes) {
   StringBuffer log = new StringBuffer();
   num totalTime = 0;
@@ -59,37 +58,39 @@ class CpuResult extends StatelessWidget {
         centerTitle: true,
         title: Text('Gantt Chart'),
       ),
-      body: Container(
-        margin: EdgeInsets.fromLTRB(30, 50, 30, 50),
-        padding: EdgeInsets.all(20.0),
-        decoration: BoxDecoration(borderRadius: BorderRadius.circular(10.0), color: Colors.blue[200], boxShadow: [BoxShadow(color: Colors.grey[900]!, blurRadius: 15)]),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(
-              "Average wait: ${avgWait.toStringAsFixed(2)}",
-              style: GoogleFonts.sourceCodePro(),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            SizedBox(
-              height: 50,
-              child: Row(
-                children: list,
+      body: IntrinsicHeight(
+        child: Container(
+          margin: EdgeInsets.fromLTRB(30, 50, 30, 50),
+          padding: EdgeInsets.all(20.0),
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(10.0), color: Colors.blue[200], boxShadow: [BoxShadow(color: Colors.grey[900]!, blurRadius: 15)]),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                "Average wait: ${avgWait.toStringAsFixed(2)}",
+                style: GoogleFonts.sourceCodePro(),
               ),
-            ),
-            Container(margin: EdgeInsets.fromLTRB(0.0, 50, 0.0, 0.0),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                color: Colors.blue[100],
+              SizedBox(
+                height: 20,
               ),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(gg.toString()),
+              SizedBox(
+                height: 50,
+                child: Row(
+                  children: list,
+                ),
               ),
-            )
-          ],
+              Container(margin: EdgeInsets.fromLTRB(0.0, 50, 0.0, 0.0),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                  color: Colors.blue[100],
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(gg.toString()),
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );
