@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:scheduling_algorithm/button.dart';
 import 'package:scheduling_algorithm/GantChart.dart';
 
+import 'Chart/Visulization_Chart.dart';
 import 'appTheme.dart';
 import 'colors.dart';
 
@@ -190,13 +191,32 @@ class _BodyPageState extends State<BodyPage> {
                           ),
                           Column(
                             children: [
-                              button(
-                                onPressed: () {},
-                                buttonText: 'Visualization',
-                                isEnabled: true,
+                              Hero(
+                                tag: 'lol',
+                                transitionOnUserGestures: true,
+                                child: button(
+                                  onPressed: () {
+                                    if(dropDown == 1) {
+                                      Navigator.push(context, MaterialPageRoute(
+                                          builder: (context) =>
+                                              FCFS_Chart(parseComputationProcesses())));
+                                    }else if(dropDown == 2){
+                                      Navigator.push(context, MaterialPageRoute(
+                                          builder: (context) =>
+                                              SJF_Chart(parseComputationProcesses())));
+                                    }else{
+                                      Navigator.push(context, MaterialPageRoute(
+                                          builder: (context) =>
+                                              RR_Chart(parseComputationProcesses(),RR_WINDOW)));
+                                    }
+                                  },
+                                  buttonText: 'Visualization',
+                                  isEnabled: true,
+                                ),
                               ),
                             ],
                           ),
+
                         ],
                       ),
                     ],
@@ -241,7 +261,7 @@ class _BodyPageState extends State<BodyPage> {
         title: Text(
             index != 3 ? getData(DataChoice.values[index]) : "Create your own"),
         value: DataChoice.values[index],
-        activeColor: Colors.blueAccent,
+        activeColor: light ? Colors.blueAccent : Colors.deepPurple,
         groupValue: dataChoice,
         onChanged: (DataChoice? value) {
           choiceText = getData(DataChoice.values[index]);
@@ -303,7 +323,7 @@ class TableErrorContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.blue[100],
+      color: light ? Colors.blue[100] : Colors.deepPurple[300],
       alignment: Alignment.center,
       child: Text(text!),
     );
@@ -329,7 +349,7 @@ class ProcessTable extends StatelessWidget {
   final List<TableRow> rows;
   static const TextStyle heading = TextStyle(
     fontWeight: FontWeight.bold,
-    color: Colors.blueAccent,
+    //color: Colors.deepPurpleAccent,
   );
 
   static ProcessTable fromProcessList(List<List<num>> processes,
@@ -396,7 +416,7 @@ class ProcessTable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.blue[100],
+      color: light ? Colors.blue[200] : Colors.deepPurple[300],
       child: Table(
         border: TableBorder.all(),
         children: rows,

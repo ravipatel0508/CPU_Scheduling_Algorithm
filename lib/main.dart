@@ -33,20 +33,11 @@ class _MyAppState extends State<MyApp> {
                   light ? img = AssetImage('assets/sun.png') : img = AssetImage('assets/moon.png');
                 });
               }),
-        FlatButton(
-            onPressed: (){
-              setState(() {
-                if (light = false) {
-                  light = true ;
-
-                }else {
-                  light = false;
-                }
-              }
-              );
-            },
-            padding: EdgeInsets.all(20.0),
-            child: Image(image: img))
+        /*Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Icon(light ? Icons.wb_sunny_outlined : Icons.nights_stay_outlined,color: Colors.amberAccent,),
+        ),
+            ImageIcon(light ? AssetImage('assets/sun.png') : AssetImage('assets/moon.png'),color: Colors.amberAccent,)*/
           ],
         ),
         body: SafeArea(

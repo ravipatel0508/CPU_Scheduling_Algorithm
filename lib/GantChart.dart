@@ -5,17 +5,23 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:scheduling_algorithm/appTheme.dart';
+import 'package:scheduling_algorithm/colors.dart';
 
 
 Widget FCFS(List<List<num>> processes) {
   StringBuffer log = new StringBuffer();
+
   log.writeln("Parsing input\n");
   log.write("Starting First Come First Serve with $processes");
+
   num totalTime = 0;
   num count = 1;
   num totalWait = 0;
-  List<Color> colors = List.generate(processes.length, (index) => Color((Random(index).nextDouble() * 0xFFFFFF).toInt()).withOpacity(0.1));
+
+  List<Color> colors = List.generate(processes.length, (index) => light ? Color((Random(index).nextDouble() * 0xFFFFFF).toInt()).withOpacity(0.1) : Color((Random(index).nextDouble() * 0xFFFFFF).toInt()).withOpacity(0.2));
   List<CpuProcessBar> resList = [];
+
   for (var process in processes) {
     if (process[0] > totalTime) {
       int time = process[0] - totalTime as int;
@@ -23,13 +29,15 @@ Widget FCFS(List<List<num>> processes) {
       resList.add(new CpuProcessBar(totalTime as int, totalTime + time, "", colors[1]));
       totalTime += time;
     }
-    //TODO: Add generated colors here as well
+
     var color = colors[2];
+
     if (process[0] < totalTime) {
       log.write("\nP$count is waiting for ${totalTime - process[0]}");
       totalWait += totalTime - process[0];
       color = colors[3];
     }
+
     log.write("\nRunning P$count");
     resList.add(CpuProcessBar(totalTime as int, totalTime + (process[1] as int), "P$count", color));
     totalTime += process[1] as int;
@@ -48,7 +56,7 @@ Widget SJF(List<List<num>> processes) {
   num count = 0;
   num totalWait = 0;
   List<CpuProcessBar> resList = [];
-  List<Color> colors = List.generate(processes.length, (index) => Color((Random(index).nextDouble() * 0xFFFFFF).toInt()).withOpacity(0.1));
+  List<Color> colors = List.generate(processes.length, (index) => light ? Color((Random(index).nextDouble() * 0xFFFFFF).toInt()).withOpacity(0.1) : Color((Random(index).nextDouble() * 0xFFFFFF).toInt()).withOpacity(0.2));
   var delayProcess = [0, double.infinity, -1];
 
   List<num> currentProcess = delayProcess;
@@ -114,7 +122,7 @@ Widget RR(List<List<num>> processes, int n) {
   num count = 0;
   num totalWait = 0;
   List<CpuProcessBar> resList = [];
-  List<Color> colors = List.generate(processes.length, (index) => Color((Random(index).nextDouble() * 0xFFFFFF).toInt()).withOpacity(0.1));
+  List<Color> colors = List.generate(processes.length, (index) => light ? Color((Random(index).nextDouble() * 0xFFFFFF).toInt()).withOpacity(0.1) : Color((Random(index).nextDouble() * 0xFFFFFF).toInt()).withOpacity(0.2));
   var delayProcess = [0, double.infinity, -1];
 
   List<num> currentProcess = delayProcess;
@@ -168,12 +176,35 @@ Widget RR(List<List<num>> processes, int n) {
   return CpuResult(totalWait / processes.length, resList, log);
 }
 
-class CpuResult extends StatelessWidget {
+class CpuResult extends StatefulWidget {
   final double avgWait;
   late final List<CpuProcessBar> list;
   final StringBuffer gg;
 
   CpuResult(this.avgWait,this.list, this.gg);
+
+  @override
+  _CpuResultState createState() => _CpuResultState();
+}
+
+class _CpuResultState extends State<CpuResult> with SingleTickerProviderStateMixin{
+  late AnimationController controller;
+  late Animation<double> animation;
+
+  @override
+  void initState(){
+    super.initState();
+    controller = AnimationController(vsync: this, duration: Duration(seconds: 1));
+
+    controller.forward();
+    animation = Tween(begin: 0.0, end: 1.0).animate(controller);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    controller.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -190,35 +221,40 @@ class CpuResult extends StatelessWidget {
             child: Container(
               margin: EdgeInsets.fromLTRB(30, 50, 30, 50),
               padding: EdgeInsets.all(20.0),
-              decoration: BoxDecoration(borderRadius: BorderRadius.circular(10.0), color: Colors.blue[200], boxShadow: [BoxShadow(color: Colors.grey[900]!, blurRadius: 15)]),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Text(
-                    "Average wait: ${avgWait.toStringAsFixed(2)}",
+                    "Average wait: ${widget.avgWait.toStringAsFixed(2)}",
                     style: GoogleFonts.sourceCodePro(),
                   ),
                   SizedBox(
                     height: 20,
                   ),
-                  SizedBox(
-                    height: 50,
-                    child: Row(
-                      children: list,
+                  SizeTransition(
+                    sizeFactor: controller,
+                    //axis: Axis.vertical,
+                    child: SizedBox(
+                      height: 60,
+                      child: Row(
+                        children: widget.list,
+                      ),
                     ),
                   ),
                   Container(margin: EdgeInsets.fromLTRB(0.0, 50, 0.0, 0.0),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                      color: Colors.blue[100],
+                      color: light? lightLogColor : darkLogColor,
+                        boxShadow: [light ? BoxShadow(color: Colors.grey[600]!, blurRadius: 15) : BoxShadow(color: Colors.black38, blurRadius: 15)]
                     ),
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Text(gg.toString()),
+                      child: Text(widget.gg.toString()),
                     ),
                   )
                 ],
               ),
+              decoration: BoxDecoration(borderRadius: BorderRadius.circular(10.0), color: light ? lightGantChartColor : darkGantChartColor , boxShadow: [light ? BoxShadow(color: Colors.grey[900]!, blurRadius: 15) : BoxShadow(color: Colors.black, blurRadius: 15)]),
             ),
           ),
         ),
@@ -249,6 +285,7 @@ class CpuProcessBar extends StatelessWidget {
         ),
         child: Stack(
           clipBehavior: Clip.none,
+          overflow: Overflow.visible,
           children: [
             Center(
               child: Text(
@@ -261,7 +298,7 @@ class CpuProcessBar extends StatelessWidget {
             ),
             Positioned(
               right: 0,
-              bottom: -20,
+              bottom: 0,
               child: Text(
                 end.toString(),
                 style: GoogleFonts.sourceCodePro(),
@@ -269,7 +306,7 @@ class CpuProcessBar extends StatelessWidget {
             ),
             Positioned(
               left: 0,
-              bottom: -20,
+              bottom: 0,
               child: Text(
                 start == 0 ? '0' : '',
                 style: GoogleFonts.sourceCodePro(),
