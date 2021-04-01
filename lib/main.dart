@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:scheduling_algorithm/appTheme.dart';
 import 'package:scheduling_algorithm/body_page.dart';
 
@@ -20,7 +21,7 @@ class _MyAppState extends State<MyApp> {
          theme: light ? lightTheme : darkTheme,
       home: Scaffold(
         appBar: AppBar(
-          title: Center(child: Text('Scheduling Algorithms')),
+          title: Center(child: Text('Scheduling Algorithms', style: GoogleFonts.poppins(),)),
           actions: <Widget>[Switch(
             activeThumbImage: AssetImage('assets/sun.png'),
               inactiveThumbImage: AssetImage('assets/moon.png'),

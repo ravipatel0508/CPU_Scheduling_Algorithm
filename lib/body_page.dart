@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:scheduling_algorithm/aaaaaaaaa.dart';
 import 'package:scheduling_algorithm/button.dart';
 import 'package:scheduling_algorithm/GantChart.dart';
 
@@ -19,7 +20,7 @@ class BodyPage extends StatefulWidget {
 
 class _BodyPageState extends State<BodyPage> {
   String dropdownValue = 'FCFS';
-  List<String> listItem = ['FCFS', 'SJF', 'RR'];
+  List<String> listItem = ['FCFS', 'SJF', 'SRTF', 'RR', 'TL_FCFS'];
   late int dropDown = 1;
 
   DataChoice? dataChoice = DataChoice.First;
@@ -83,8 +84,12 @@ class _BodyPageState extends State<BodyPage> {
                                   dropDown = 1;
                                 } else if (dropdownValue == 'SJF') {
                                   dropDown = 2;
-                                } else {
+                                } else if(dropdownValue == 'SRTF'){
                                   dropDown = 3;
+                                } else if(dropdownValue == 'RR'){
+                                  dropDown = 4;
+                                }else{
+                                  dropDown = 5;
                                 }
                               });
                             },
@@ -177,10 +182,18 @@ class _BodyPageState extends State<BodyPage> {
                                         Navigator.push(context, MaterialPageRoute(
                                             builder: (context) =>
                                                 SJF(parseComputationProcesses())));
-                                      }else{
+                                      }else if(dropDown == 3){
+                                        Navigator.push(context, MaterialPageRoute(
+                                            builder: (context) =>
+                                                SRTF(parseComputationProcesses())));
+                                      }else if(dropDown == 4){
                                         Navigator.push(context, MaterialPageRoute(
                                             builder: (context) =>
                                                 RR(parseComputationProcesses(),RR_WINDOW)));
+                                      }else{
+                                        Navigator.push(context, MaterialPageRoute(
+                                            builder: (context) =>
+                                                TL_FCFS(parseComputationProcesses())));
                                       }
                                     },
                                   buttonText: 'Gantt Chart',
@@ -204,10 +217,18 @@ class _BodyPageState extends State<BodyPage> {
                                       Navigator.push(context, MaterialPageRoute(
                                           builder: (context) =>
                                               SJF_Chart(parseComputationProcesses())));
-                                    }else{
+                                    }else if(dropDown == 3){
+                                      Navigator.push(context, MaterialPageRoute(
+                                          builder: (context) =>
+                                              SRTF_Chart(parseComputationProcesses())));
+                                    } else if(dropDown == 4){
                                       Navigator.push(context, MaterialPageRoute(
                                           builder: (context) =>
                                               RR_Chart(parseComputationProcesses(),RR_WINDOW)));
+                                    }else{
+                                      Navigator.push(context, MaterialPageRoute(
+                                          builder: (context) =>
+                                              TL_FCFS_Chart(parseComputationProcesses())));
                                     }
                                   },
                                   buttonText: 'Visualization',
@@ -226,7 +247,7 @@ class _BodyPageState extends State<BodyPage> {
             ));
   }
 
-  List<List<num>> parseComputationProcesses() {
+  List<List<int>> parseComputationProcesses() {
     var rawInput = choiceText.split(";");
     return List.generate(rawInput.length, (i) {
       var str = rawInput[i].split(",");
