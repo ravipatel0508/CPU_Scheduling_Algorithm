@@ -5,8 +5,8 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:scheduling_algorithm/appTheme.dart';
-import 'package:scheduling_algorithm/colors.dart';
+import 'file:///E:/FlutterProject/scheduling_algorithm/lib/colorAndTheme/appTheme.dart';
+import 'file:///E:/FlutterProject/scheduling_algorithm/lib/colorAndTheme/colors.dart';
 
 
 
@@ -46,6 +46,7 @@ Widget FCFS(List<List<num>> processes) {
   }
 
   log.write("\nFinished FCFS");
+  print(totalWait);
   return CpuResult(totalWait / processes.length, resList, log);
 }
 

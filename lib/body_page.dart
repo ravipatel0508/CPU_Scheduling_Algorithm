@@ -1,14 +1,13 @@
 import 'dart:math';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:scheduling_algorithm/aaaaaaaaa.dart';
-import 'package:scheduling_algorithm/button.dart';
-import 'package:scheduling_algorithm/GantChart.dart';
 
 import 'Chart/Visulization_Chart.dart';
-import 'appTheme.dart';
-import 'colors.dart';
+import 'colorAndTheme/appTheme.dart';
+import 'colorAndTheme/colors.dart';
+import 'ganttChart/GantChart.dart';
 
 enum DataChoice { First, Second, Third, Own }
 const int RR_WINDOW = 3;
@@ -61,45 +60,49 @@ class _BodyPageState extends State<BodyPage> {
                   scrollDirection: Axis.vertical,
                   child: Column(
                     children: [
+                      SizedBox(height: 10,),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          DropdownButton<String>(
-                            isDense: true,
-                            value: dropdownValue,
-                            dropdownColor:
-                                light ? lightButtonColor : darkButtonColor,
-                            icon: const Icon(Icons.arrow_drop_down),
-                            iconSize: 24,
-                            elevation: 16,
-                            //style: const TextStyle(color: Colors.white),
-                            underline: Container(
-                              height: 2,
-                              color: light ? lightButtonColor : darkButtonColor,
+                          Container(
+                            alignment: Alignment.center,
+                            padding: EdgeInsets.all(5),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(color: light ? lightButtonColor : darkButtonColor)
                             ),
-                            onChanged: (String? newValue) {
-                              setState(() {
-                                dropdownValue = newValue!;
-                                if (dropdownValue == 'FCFS') {
-                                  dropDown = 1;
-                                } else if (dropdownValue == 'SJF') {
-                                  dropDown = 2;
-                                } else if(dropdownValue == 'SRTF'){
-                                  dropDown = 3;
-                                } else if(dropdownValue == 'RR'){
-                                  dropDown = 4;
-                                }else{
-                                  dropDown = 5;
-                                }
-                              });
-                            },
-                            items: listItem
-                                .map<DropdownMenuItem<String>>((String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(value),
-                              );
-                            }).toList(),
+                            child: DropdownButton<String>(
+                              isDense: true,
+                              value: dropdownValue,
+                              dropdownColor: light ? lightDropDownColor : darkDropDownColor,
+                              elevation: 16,
+                              underline: SizedBox(),
+                              //style: const TextStyle(color: Colors.white),
+                              onChanged: (String? newValue) {
+                                setState(() {
+                                  dropdownValue = newValue!;
+                                  if (dropdownValue == 'FCFS') {
+                                    dropDown = 1;
+                                  } else if (dropdownValue == 'SJF') {
+                                    dropDown = 2;
+                                  } else if(dropdownValue == 'SRTF'){
+                                    dropDown = 3;
+                                  } else if(dropdownValue == 'RR'){
+                                    dropDown = 4;
+                                  }else{
+                                    dropDown = 5;
+                                  }
+                                });
+                              },
+                              items: listItem
+                                  .map<DropdownMenuItem<String>>((String value) {
+                                return DropdownMenuItem<String>(
+                                  value: value,
+                                  child: Text(value, textAlign: TextAlign.center,),
+                                );
+                              }).toList(),
+
+                            ),
                           ),
                         ],
                       ),
@@ -117,8 +120,8 @@ class _BodyPageState extends State<BodyPage> {
                             )),
                             Flexible(
                                 child: Padding(
-                              padding: const EdgeInsets.fromLTRB(0, 0, 20.0, 0),
-                              child: Column(
+                                  padding: const EdgeInsets.fromLTRB(0, 0, 20.0, 0),
+                                child: Column(
                                 children: [
                                   Padding(
                                     padding: EdgeInsets.all(8.0),
@@ -172,32 +175,45 @@ class _BodyPageState extends State<BodyPage> {
                               Hero(
                                 tag: 'dash',
                                 transitionOnUserGestures: true,
-                                child: button(
-                                  onPressed: () {
-                                      if(dropDown == 1) {
-                                        Navigator.push(context, MaterialPageRoute(
-                                            builder: (context) =>
-                                                FCFS(parseComputationProcesses())));
-                                      }else if(dropDown == 2){
-                                        Navigator.push(context, MaterialPageRoute(
-                                            builder: (context) =>
-                                                SJF(parseComputationProcesses())));
-                                      }else if(dropDown == 3){
-                                        Navigator.push(context, MaterialPageRoute(
-                                            builder: (context) =>
-                                                SRTF(parseComputationProcesses())));
-                                      }else if(dropDown == 4){
-                                        Navigator.push(context, MaterialPageRoute(
-                                            builder: (context) =>
-                                                RR(parseComputationProcesses(),RR_WINDOW)));
-                                      }else{
-                                        Navigator.push(context, MaterialPageRoute(
-                                            builder: (context) =>
-                                                TL_FCFS(parseComputationProcesses())));
-                                      }
-                                    },
-                                  buttonText: 'Gantt Chart',
-                                  isEnabled: true
+                                child: SizedBox(
+                                  height: 55,
+                                  width: 200,
+                                  child: ElevatedButton(
+                                    child: Text("Gantt Chart",style: TextStyle(color: light ? Colors.blue : Colors.deepPurpleAccent),),
+                                    style: ButtonStyle(
+                                      shadowColor: MaterialStateProperty.all<Color>(Colors.transparent),
+                                      backgroundColor: MaterialStateProperty.all<Color>(Colors.transparent),
+                                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                            RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(18.0),
+                                                side: BorderSide(color: light ? lightButtonColor : darkButtonColor)
+                                            )
+                                        )
+                                    ),
+                                    onPressed: () {
+                                        if(dropDown == 1) {
+                                          Navigator.push(context, MaterialPageRoute(
+                                              builder: (context) =>
+                                                  FCFS(parseComputationProcesses())));
+                                        }else if(dropDown == 2){
+                                          Navigator.push(context, MaterialPageRoute(
+                                              builder: (context) =>
+                                                  SJF(parseComputationProcesses())));
+                                        }else if(dropDown == 3){
+                                          Navigator.push(context, MaterialPageRoute(
+                                              builder: (context) =>
+                                                  SRTF(parseComputationProcesses())));
+                                        }else if(dropDown == 4){
+                                          Navigator.push(context, MaterialPageRoute(
+                                              builder: (context) =>
+                                                  RR(parseComputationProcesses(),RR_WINDOW)));
+                                        }else{
+                                          Navigator.push(context, MaterialPageRoute(
+                                              builder: (context) =>
+                                                  TL_FCFS(parseComputationProcesses())));
+                                        }
+                                      },
+                                  ),
                                 ),
                               ),
                             ],
@@ -207,44 +223,59 @@ class _BodyPageState extends State<BodyPage> {
                               Hero(
                                 tag: 'lol',
                                 transitionOnUserGestures: true,
-                                child: button(
-                                  onPressed: () {
-                                    if(dropDown == 1) {
-                                      Navigator.push(context, MaterialPageRoute(
-                                          builder: (context) =>
-                                              FCFS_Chart(parseComputationProcesses())));
-                                    }else if(dropDown == 2){
-                                      Navigator.push(context, MaterialPageRoute(
-                                          builder: (context) =>
-                                              SJF_Chart(parseComputationProcesses())));
-                                    }else if(dropDown == 3){
-                                      Navigator.push(context, MaterialPageRoute(
-                                          builder: (context) =>
-                                              SRTF_Chart(parseComputationProcesses())));
-                                    } else if(dropDown == 4){
-                                      Navigator.push(context, MaterialPageRoute(
-                                          builder: (context) =>
-                                              RR_Chart(parseComputationProcesses(),RR_WINDOW)));
-                                    }else{
-                                      Navigator.push(context, MaterialPageRoute(
-                                          builder: (context) =>
-                                              TL_FCFS_Chart(parseComputationProcesses())));
-                                    }
-                                  },
-                                  buttonText: 'Visualization',
-                                  isEnabled: true,
+                                child: SizedBox(
+                                  height: 55,
+                                  width: 200,
+                                  child: ElevatedButton(
+                                    child: Text("Visualization"),
+                                    style: ButtonStyle(
+                                        backgroundColor: MaterialStateProperty.all<Color>(light ? lightButtonColor : darkButtonColor),
+                                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                            RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(18.0),
+                                                side: BorderSide(color: light ? lightButtonColor : darkButtonColor)
+                                            )
+                                        )
+                                    ),
+                                    onPressed: () {
+                                      if(dropDown == 1) {
+                                        Navigator.push(context, MaterialPageRoute(
+                                            builder: (context) =>
+                                                FCFS_Chart(parseComputationProcesses())));
+                                      }else if(dropDown == 2){
+                                        Navigator.push(context, MaterialPageRoute(
+                                            builder: (context) =>
+                                                SJF_Chart(parseComputationProcesses())));
+                                      }else if(dropDown == 3){
+                                        Navigator.push(context, MaterialPageRoute(
+                                            builder: (context) =>
+                                                SRTF_Chart(parseComputationProcesses())));
+                                      } else if(dropDown == 4){
+                                        Navigator.push(context, MaterialPageRoute(
+                                            builder: (context) =>
+                                                RR_Chart(parseComputationProcesses(),RR_WINDOW)));
+                                      }else{
+                                        Navigator.push(context, MaterialPageRoute(
+                                            builder: (context) =>
+                                                TL_FCFS_Chart(parseComputationProcesses())));
+                                      }
+                                    },
+                                  ),
                                 ),
                               ),
                             ],
                           ),
-
                         ],
                       ),
+                      SizedBox(
+                        height: 20,
+                      )
                     ],
                   ),
                 ),
               ),
-            ));
+            )
+    );
   }
 
   List<List<int>> parseComputationProcesses() {
@@ -437,9 +468,16 @@ class ProcessTable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: light ? Colors.blue[200] : Colors.deepPurple[300],
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(
+          color: light ? lightProcessTable : darkProcessTable,
+          width: 3
+        ),
+        //boxShadow: [light ? BoxShadow(color: Colors.grey[600]!, blurRadius: 7) : BoxShadow(color: Colors.black, blurRadius: 10)]
+      ),
       child: Table(
-        border: TableBorder.all(),
+        //border: TableBorder.symmetric(outside: BorderSide(width: 0)),
         children: rows,
       ),
     );

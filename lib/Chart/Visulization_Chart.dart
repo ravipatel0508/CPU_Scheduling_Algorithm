@@ -4,6 +4,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
 
+bool showAvg = true;
 
 Widget FCFS_Chart(List<List<num>> processes) {
   num totalTime = 0;
@@ -28,7 +29,7 @@ Widget FCFS_Chart(List<List<num>> processes) {
     count += 1;
   }
 
-  return lineData(chartLineData, totalTime, processes.length);
+  return lineData(chartLineData, totalTime, processes.length, totalWait / processes.length);
 }
 
 Widget SJF_Chart(List<List<num>> processes) {
@@ -83,7 +84,7 @@ Widget SJF_Chart(List<List<num>> processes) {
     backlog.forEach((element) => totalWait++);
   }
 
-  return lineData(chartLineData, totalTime, processes.length);
+  return lineData(chartLineData, totalTime, processes.length, (totalWait / processes.length).toDouble());
 }
 
 Widget RR_Chart(List<List<num>> processes, int n) {
@@ -137,7 +138,7 @@ Widget RR_Chart(List<List<num>> processes, int n) {
     backlog.forEach((element) => totalWait++);
     queue.forEach((element) => totalWait++);
   }
-  return lineData(chartLineData, totalTime, processes.length);
+  return lineData(chartLineData, totalTime, processes.length, (totalWait / processes.length).toDouble());
 }
 
 Widget TL_FCFS_Chart(List<List<num>> processes) {
@@ -226,7 +227,7 @@ Widget TL_FCFS_Chart(List<List<num>> processes) {
   }
 
   //return CpuResult(totalWait / processes.length, resList, log);
-  return lineData(chartLineData, totalTime, processes.length);
+  return lineData(chartLineData, totalTime, processes.length, (totalWait / processes.length).toDouble());
 }
 
 Widget SRTF_Chart(List<List<int>> processes) {
@@ -356,10 +357,10 @@ Widget SRTF_Chart(List<List<int>> processes) {
   for (int i = 0; i < start.length; i++) {
     chartLineData.add(FlSpot(end[i].toDouble(), text[i].toDouble()));
   }
-  return lineData(chartLineData, total_time - 1, proc.length - 1);
+  return lineData(chartLineData, total_time - 1, proc.length - 1, WT);
 }
 
-lineData(List<FlSpot> chartLineData, num totalTime, int processLength) {
+lineData(List<FlSpot> chartLineData, num totalTime, int processLength, double waitingTime) {
 
   final List<Color> gradientColors = [
     const Color(0xff23b6e6),
@@ -376,7 +377,8 @@ lineData(List<FlSpot> chartLineData, num totalTime, int processLength) {
         show: true,
         colors: gradientColors.map((color) => color.withOpacity(0.3)).toList()),
   ));
-  return Chart(data, totalTime, processLength);
+
+  return Chart(data, totalTime, processLength, waitingTime);
 }
 
 
@@ -387,8 +389,9 @@ class Chart extends StatefulWidget {
   int processLength;
   late List<String> leftTitles = [];
   late List<String> bottomTitles = [];
+  double waitingTime;
 
-  Chart(this.data, this.totalTime, this.processLength);
+  Chart(this.data, this.totalTime, this.processLength, this.waitingTime);
 
   @override
   _ChartState createState() => _ChartState();
@@ -396,7 +399,7 @@ class Chart extends StatefulWidget {
 
 class _ChartState extends State<Chart> {
 
-  bool showAvg = false;
+  bool showAvg = true;
 
   @override
   Widget build(BuildContext context) {
@@ -405,73 +408,185 @@ class _ChartState extends State<Chart> {
         centerTitle: true,
         title: Text('Chart'),
       ),
-      body: Container(
-        padding: EdgeInsets.all(20.0),
-        decoration: BoxDecoration(color: Color(0xff020227)),
-        child: LineChart(LineChartData(
-          lineTouchData: LineTouchData(enabled: false),
-          gridData: FlGridData(
-            show: true,
-            drawVerticalLine: true,
-            drawHorizontalLine: true,
-            getDrawingVerticalLine: (value) {
-              return FlLine(
-                color: const Color(0xff37434d),
-                strokeWidth: 1,
-              );
-            },
-            getDrawingHorizontalLine: (value) {
-              return FlLine(
-                color: const Color(0xff37434d),
-                strokeWidth: 1,
-              );
-            },
-          ),
-          titlesData: FlTitlesData(
-            show: true,
-            bottomTitles: SideTitles(
-              showTitles: true,
-              reservedSize: 22,
-              getTextStyles: (value) => const TextStyle(
-                  color: Color(0xff68737d),
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16),
-              getTitles: (value){
-                for(int i=0; i<=widget.totalTime; i++){
-                  widget.bottomTitles.add(i.toString());
-                }
-                return widget.bottomTitles[value.toInt()];
-              },
-              margin: 8,
-            ),
-            leftTitles: SideTitles(
-              showTitles: true,
-              getTextStyles: (value) => const TextStyle(
-                color: Color(0xff67727d),
-                fontWeight: FontWeight.bold,
-                fontSize: 15,
-              ),
-              getTitles: (value) {
-                for(int i=0; i<=widget.processLength; i++){
-                  widget.leftTitles.add('P'+i.toString());
-                }
-                return widget.leftTitles[value.toInt()];
-              },
-              reservedSize: 12,
-              margin: 12,
-            ),
-          ),
-          borderData: FlBorderData(
+      body: Stack(
+        children:[
+          Container(
+          padding: EdgeInsets.all(25.0),
+          decoration: BoxDecoration(color: Color(0xff020227)),
+          child: LineChart(showAvg ? LineChartData(
+            lineTouchData: LineTouchData(enabled: false),
+            gridData: FlGridData(
               show: true,
-              border: Border.all(color: const Color(0xff37434d), width: 3)),
-          minX: 0,
-          maxX: (widget.totalTime).toDouble(),
-          minY: 0,
-          maxY: (widget.processLength+1).toDouble(),
-          lineBarsData: widget.data,
-        )
+              drawVerticalLine: true,
+              drawHorizontalLine: true,
+              getDrawingVerticalLine: (value) {
+                return FlLine(
+                  color: const Color(0xff37434d),
+                  strokeWidth: 1,
+                );
+              },
+              getDrawingHorizontalLine: (value) {
+                return FlLine(
+                  color: const Color(0xff37434d),
+                  strokeWidth: 1,
+                );
+              },
+            ),
+            titlesData: FlTitlesData(
+              show: true,
+              bottomTitles: SideTitles(
+                showTitles: true,
+                reservedSize: 22,
+                getTextStyles: (value) => const TextStyle(
+                    color: Color(0xff68737d),
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16),
+                getTitles: (value){
+                  for(int i=0; i<=widget.totalTime; i++){
+                    widget.bottomTitles.add(i.toString());
+                  }
+                  return widget.bottomTitles[value.toInt()];
+                },
+                margin: 8,
+              ),
+              leftTitles: SideTitles(
+                showTitles: true,
+                getTextStyles: (value) => const TextStyle(
+                  color: Color(0xff67727d),
+                  fontWeight: FontWeight.bold,
+                  fontSize: 15,
+                ),
+                getTitles: (value) {
+                  for(int i=0; i<=widget.processLength; i++){
+                    widget.leftTitles.add('P'+i.toString());
+                  }
+                  return widget.leftTitles[value.toInt()];
+                },
+                reservedSize: 12,
+                margin: 12,
+              ),
+            ),
+            borderData: FlBorderData(
+                show: true,
+                border: Border.all(color: const Color(0xff37434d), width: 3)),
+            minX: 0,
+            maxX: (widget.totalTime).toDouble(),
+            minY: 0,
+            maxY: (widget.processLength+1).toDouble(),
+            lineBarsData: widget.data,
+          ) : avgData(widget.waitingTime, widget.totalTime.toDouble())
+          ),
         ),
+          SizedBox(
+            width: 60,
+            height: 34,
+            child: FloatingActionButton(
+              backgroundColor: Color(0xff020227),
+              onPressed: () {
+                setState(() {
+                  showAvg = !showAvg;
+                });
+              },
+              child: Text(
+                'avg',
+                style: TextStyle(
+                    fontSize: 12,
+                    color:
+                    showAvg ? Colors.white.withOpacity(0.5) : Colors.white),
+              ),
+            ),
+          ),
+        ]
       ),
     );
   }
+
+}
+
+
+LineChartData avgData(double avgWT, double totalTime) {
+
+  final List<Color> gradientColors = [
+    const Color(0xff23b6e6),
+    const Color(0xff02d39a),
+    //const Color(0xff02d39a),
+  ];
+
+  return LineChartData(
+    lineTouchData: LineTouchData(enabled: false),
+    gridData: FlGridData(
+      show: true,
+      drawHorizontalLine: true,
+      getDrawingVerticalLine: (value) {
+        return FlLine(
+          color: const Color(0xff37434d),
+          strokeWidth: 1,
+        );
+      },
+      getDrawingHorizontalLine: (value) {
+        return FlLine(
+          color: const Color(0xff37434d),
+          strokeWidth: 1,
+        );
+      },
+    ),
+    titlesData: FlTitlesData(
+      show: true,
+      bottomTitles: SideTitles(showTitles: true, getTitles: (value) { switch (value.toInt()) {} return ''; },),
+      leftTitles: SideTitles(
+        rotateAngle: 270,
+        showTitles: true,
+        getTextStyles: (value) => const TextStyle(
+          color: Color(0xff67727d),
+          fontWeight: FontWeight.bold,
+          fontSize: 15,
+        ),
+        getTitles: (value) {
+
+          switch (value.toInt()) {
+            case 1:
+              return avgWT.toString();
+          }
+          return '';
+        },
+        reservedSize: 28,
+        margin: 12,
+      ),
+    ),
+    borderData: FlBorderData(
+        show: true,
+        border: Border.all(color: const Color(0xff37434d), width: 1)),
+    minX: 0,
+    maxX: totalTime,
+    minY: 0,
+    maxY: avgWT.toInt()+2,
+    lineBarsData: [
+      LineChartBarData(
+        spots: [
+          FlSpot(0, avgWT - 1),
+          FlSpot(totalTime, avgWT - 1)
+        ],
+        isCurved: true,
+        colors: [
+          ColorTween(begin: gradientColors[0], end: gradientColors[1])
+              .lerp(0.2)!,
+          ColorTween(begin: gradientColors[0], end: gradientColors[1])
+              .lerp(0.2)!,
+        ],
+        barWidth: 5,
+        isStrokeCapRound: true,
+        dotData: FlDotData(
+          show: false,
+        ),
+        belowBarData: BarAreaData(show: true, colors: [
+          ColorTween(begin: gradientColors[0], end: gradientColors[1])
+              .lerp(0.2)!
+              .withOpacity(0.1),
+          ColorTween(begin: gradientColors[0], end: gradientColors[1])
+              .lerp(0.2)!
+              .withOpacity(0.1),
+        ]),
+      ),
+    ],
+  );
 }
