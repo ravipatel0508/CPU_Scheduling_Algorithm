@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-Color darkButtonColor = Colors.deepPurpleAccent;
-Color darkPrimaryColor = Colors.deepPurpleAccent;
-Color darkAccentColor = Colors.deepPurple;
-Color darkGantChartColor = Colors.deepPurple[300]!;
-Color darkLogColor = Colors.deepPurple[200]!;
-Color darkProcessTable = Colors.deepPurple[300]!;
-Color darkDropDownColor = Colors.deepPurple[300]!;
+Color darkButtonColor = Color(0xff2F4047);
+Color darkPrimaryColor = Color(0xff2F4047);
+Color darkAccentColor = Color(0xff2F4047);
+Color darkGantChartColor = Color(0xff435956);
+Color darkLogColor = Color(0xff6d7e7c);
+Color darkProcessTable = Color(0xff2F4047);
+Color darkDropDownColor = Color(0xff2F4047);
 
 
 Color lightButtonColor = Colors.blue;

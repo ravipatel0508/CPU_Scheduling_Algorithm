@@ -20,6 +20,7 @@ ThemeData lightTheme = ThemeData(
     accentColor: lightAccentColor,
     brightness: Brightness.light,
     primaryColor: lightPrimaryColor,
+    backgroundColor: Colors.blueGrey[50],
 
     buttonTheme: ButtonThemeData(
         buttonColor: lightButtonColor,

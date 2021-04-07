@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class AAAA extends StatelessWidget {
+class Help extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -9,7 +9,7 @@ class AAAA extends StatelessWidget {
       color: Colors.blueGrey[50],
       child: Center(
         child: Text(
-          'Dashboard',
+          'Help',
           style: Theme.of(context).textTheme.headline3,
           // overflow: TextOverflow.visible,
           //softWrap: false,

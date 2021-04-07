@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:scheduling_algorithm/dashboard.dart';
-import 'package:scheduling_algorithm/homePage.dart';
+import 'package:scheduling_algorithm/projectSelection.dart';
 
 class SplashScreen extends StatefulWidget {
   SplashScreen({Key? key}) : super(key: key);
@@ -30,7 +30,7 @@ class _SplashScreenState extends State<SplashScreen> {
         child: SizedBox(
           height: 200,
           width: 200,
-          child: Lottie.asset('assets/xyz.json'),
+          child: Lottie.asset('assets/splash.json'),
         )
       ),
     );

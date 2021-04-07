@@ -2,6 +2,8 @@ import 'dart:collection';
 
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:scheduling_algorithm/colorAndTheme/appTheme.dart';
+import 'package:scheduling_algorithm/colorAndTheme/colors.dart';
 
 
 bool showAvg = true;
@@ -405,6 +407,7 @@ class _ChartState extends State<Chart> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Color(0xff020227),
         centerTitle: true,
         title: Text('Chart'),
       ),

@@ -27,7 +27,7 @@ class _BodyPageState extends State<BodyPage> {
   late List<bool> selectedAlgo;
   bool hasResult = false;
   bool error = false;
-  String choiceText = "0,5;6,9;6,5;15,10";
+  String choiceText = "0,3;2,5;5,2;4,8";
   Widget? resWidget;
   FocusNode focus = FocusNode();
 
@@ -179,10 +179,9 @@ class _BodyPageState extends State<BodyPage> {
                                   height: 55,
                                   width: 200,
                                   child: ElevatedButton(
-                                    child: Text("Gantt Chart",style: TextStyle(color: light ? Colors.blue : Colors.deepPurpleAccent),),
+                                    child: Text("Gantt Chart",),
                                     style: ButtonStyle(
-                                      shadowColor: MaterialStateProperty.all<Color>(Colors.transparent),
-                                      backgroundColor: MaterialStateProperty.all<Color>(Colors.transparent),
+                                        backgroundColor: MaterialStateProperty.all<Color>(light ? lightButtonColor : darkButtonColor),
                                         shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                                             RoundedRectangleBorder(
                                                 borderRadius: BorderRadius.circular(18.0),
@@ -227,9 +226,11 @@ class _BodyPageState extends State<BodyPage> {
                                   height: 55,
                                   width: 200,
                                   child: ElevatedButton(
-                                    child: Text("Visualization"),
+                                    child: Text("Visualization", style: TextStyle(color: light ? lightAccentColor : Colors.white),),
+
                                     style: ButtonStyle(
-                                        backgroundColor: MaterialStateProperty.all<Color>(light ? lightButtonColor : darkButtonColor),
+                                        shadowColor: MaterialStateProperty.all<Color>(Colors.transparent),
+                                        backgroundColor: MaterialStateProperty.all<Color>(Colors.transparent),
                                         shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                                             RoundedRectangleBorder(
                                                 borderRadius: BorderRadius.circular(18.0),
@@ -313,7 +314,7 @@ class _BodyPageState extends State<BodyPage> {
         title: Text(
             index != 3 ? getData(DataChoice.values[index]) : "Create your own"),
         value: DataChoice.values[index],
-        activeColor: light ? Colors.blueAccent : Colors.deepPurple,
+        activeColor: light ? lightAccentColor : darkAccentColor,
         groupValue: dataChoice,
         onChanged: (DataChoice? value) {
           choiceText = getData(DataChoice.values[index]);

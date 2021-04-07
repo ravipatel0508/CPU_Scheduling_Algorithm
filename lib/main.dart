@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:scheduling_algorithm/colorAndTheme/appTheme.dart';
 import 'package:scheduling_algorithm/splashScreen.dart';
+
+import 'colorAndTheme/appTheme.dart';
 
 void main() {
   runApp(MyApp());
