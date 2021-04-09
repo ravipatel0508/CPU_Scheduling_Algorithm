@@ -20,7 +20,7 @@ class HomePage extends StatelessWidget {
             verticalDirection: VerticalDirection.down,
             children: [
               SvgPicture.asset(
-                'assets/homepageassets/darkProcess.svg',
+                'assets/homepageassets/undraw_Processing_re_tbdu.svg',
                 height: 200,
                 width: 200,
               ),
@@ -85,7 +85,7 @@ class HomePage extends StatelessWidget {
                 ]),
               ),
               SvgPicture.asset(
-                'assets/homepageassets/darkSelection.svg',
+                'assets/homepageassets/undraw_selection_re_ycpo.svg',
                 height: 300,
                 width: 300,
               ),
@@ -105,7 +105,7 @@ class HomePage extends StatelessWidget {
             verticalDirection: VerticalDirection.down,
             children: [
               SvgPicture.asset(
-                'assets/homepageassets/darkCloudDocs.svg',
+                'assets/homepageassets/undraw_Cloud_docs_re_xjht.svg',
                 height: 250,
                 width: 250,
               ),

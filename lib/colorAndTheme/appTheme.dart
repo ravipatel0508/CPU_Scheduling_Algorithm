@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'file:///E:/FlutterProject/scheduling_algorithm/lib/colorAndTheme/colors.dart';
 
-bool light = true;
+bool light = false;
 ThemeData darkTheme = ThemeData(
     fontFamily: 'poppins',
     accentColor: darkAccentColor,

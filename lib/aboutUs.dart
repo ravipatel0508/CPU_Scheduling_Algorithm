@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:scheduling_algorithm/colorAndTheme/colors.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AboutUs extends StatelessWidget {
@@ -25,9 +26,8 @@ class AboutUs extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.only(left: 8,top: 10,right: 8),
                   child: Text(
-                    "-> This Web Application is made to fulfil the purpose of our OS project.\n"
-                    "-> We are students of PDEU (Pandit Deendayal Energy University) of CSE (Computer Science and Engineering) Department.\n"
-                    "-> We currently are in 4th Semester.\n"
+                    "-> This project is made with the motive to help the user get a proper understanding of the CPU Scheduling Algorithms along with modern visualizations for a better grasp and ultimate experience.\n\n"
+                    "-> We are currently in our Sophomore year pursuing our Bachelor's with majors in Computer Science  in PDEU (Pandit Deendayal Energy University).\n\n"
                     "-> Designed and Implemented by:",
                     style: TextStyle(color: Colors.blueGrey, fontSize: 20),
                   ),
@@ -43,9 +43,17 @@ class AboutUs extends StatelessWidget {
                   children: [
                     Padding(
                       padding: const EdgeInsets.only(left: 100),
-                      child: Text(
-                        'Manav Bhavsar\n19BCP077',
-                        style: TextStyle(color: Colors.blueGrey, fontSize: 18),
+                      child: Container(
+                        padding: EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(
+                                width: 4,
+                                color: darkButtonColor)),
+                        child: Text(
+                          'Manav Bhavsar\n19BCP077',
+                          style: TextStyle(color: Colors.blueGrey, fontSize: 18),
+                        ),
                       ),
                     ),
                   ],
@@ -54,17 +62,43 @@ class AboutUs extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text(
-                      'Ravi Patel\n19BCP172D\n\n',
-                      style: TextStyle(color: Colors.blueGrey, fontSize: 18),
+                    Container(
+                      padding: EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                              width: 4,
+                              color: darkButtonColor)),
+                      child: Text(
+                        'Ravi Patel\n19BCP172D',
+                        style: TextStyle(color: Colors.blueGrey, fontSize: 18),
+                      ),
                     ),
-                    Text(
-                      'Mayank Gupta\n19BCP079',
-                      style: TextStyle(color: Colors.blueGrey, fontSize: 18),
+                    SizedBox(height: 50,),
+                    Container(
+                      padding: EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                              width: 4,
+                              color: darkButtonColor)),
+                      child: Text(
+                        'Mayank Gupta\n19BCP079',
+                        style: TextStyle(color: Colors.blueGrey, fontSize: 18),
+                      ),
                     ),
-                    Text(
-                      '\n\nDhrumil Shah\n19BCP164D',
-                      style: TextStyle(color: Colors.blueGrey, fontSize: 18),
+                    SizedBox(height: 50,),
+                    Container(
+                      padding: EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                            width: 4,
+                              color: darkButtonColor)),
+                      child: Text(
+                        'Dhrumil Shah\n19BCP164D',
+                        style: TextStyle(color: Colors.blueGrey, fontSize: 18),
+                      ),
                     ),
                   ],
                 ),
@@ -72,9 +106,17 @@ class AboutUs extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'Shreya Srivatsava\n19BCP123',
-                      style: TextStyle(color: Colors.blueGrey, fontSize: 18),
+                    Container(
+                      padding: EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                              width: 4,
+                              color: darkButtonColor)),
+                      child: Text(
+                        'Shreya Srivastava\n19BCP123',
+                        style: TextStyle(color: Colors.blueGrey, fontSize: 18),
+                      ),
                     ),
                   ],
                 ),
@@ -105,7 +147,8 @@ class AboutUs extends StatelessWidget {
                       }
                     }),
               ],
-            )
+            ),
+            SizedBox(height: 30,)
           ],
         ),
       ),
