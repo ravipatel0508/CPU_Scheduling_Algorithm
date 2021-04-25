@@ -1,10 +1,10 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:scheduling_algorithm/algoTheory.dart';
 
-import 'colorAndTheme/appTheme.dart';
-import 'colorAndTheme/colors.dart';
+import '../colorAndTheme/appTheme.dart';
+import '../colorAndTheme/colors.dart';
+import 'algoTheory.dart';
 
 class Information extends StatefulWidget {
   @override
@@ -33,7 +33,7 @@ class _InformationState extends State<Information> {
                       child: Text(
                         "Information",
                         style:
-                            TextStyle(color: Colors.blueGrey, fontSize: 35),
+                            TextStyle(color: textColor, fontSize: 35),
                       ),
                     ),
                     Divider(
@@ -55,7 +55,7 @@ class _InformationState extends State<Information> {
                             child: DropdownButton<String>(
                               isDense: true,
                               value: dropdownValue,
-                              dropdownColor: Colors.blueGrey,
+                              dropdownColor: textColor,
                               elevation: 16,
                               underline: SizedBox(),
                               //style: const TextStyle(color: Colors.white),
@@ -99,7 +99,7 @@ class _InformationState extends State<Information> {
                               padding: const EdgeInsets.all(8.0),
                               child: Text(text,
                               style: TextStyle(
-                                color: Colors.blueGrey,
+                                color: textColor,
                                 fontSize: 17
                               ),),
                             ),

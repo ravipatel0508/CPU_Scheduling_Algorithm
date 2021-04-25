@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:scheduling_algorithm/colorAndTheme/colors.dart';
 
 class HomePage extends StatelessWidget {
+
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -30,7 +34,7 @@ class HomePage extends StatelessWidget {
                   children:[ Text(
                     'What is CPU Scheduling?',
                     style: TextStyle(
-                      color: Colors.blueGrey,
+                      color: textColor,
                         fontSize: 24
                     ),
                     textAlign: TextAlign.center,
@@ -39,7 +43,7 @@ class HomePage extends StatelessWidget {
                     'CPU scheduling is a process of determining which process will own CPU for execution while another process is on hold. The main task of CPU Scheduling is to make sure that whenever the CPU remains idle, the OS at least selects one of the processes available in the ready queue for execution. The selection procedure will be carried out by the CPU Scheduler. It selects one of the processes in the memory that are ready for execution.',
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      color: Colors.blueGrey,
+                      color: textColor,
                     ),
                   ),
                 ]
@@ -68,7 +72,7 @@ class HomePage extends StatelessWidget {
                     'How does the scheduler decide which process to select?',
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      color: Colors.blueGrey,
+                      color: textColor,
                       fontSize: 24
                     ),
                   ),
@@ -78,7 +82,7 @@ class HomePage extends StatelessWidget {
                       'The scheduler can decide based on different algorithms that come under CPU Scheduling that allows selection in different ways as required. These algorithms decide the criteria and rules to select the process.',
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        color: Colors.blueGrey,
+                        color: textColor,
                       ),
                     ),
                   ),
@@ -116,7 +120,7 @@ class HomePage extends StatelessWidget {
                     'What are the Algorithms?',
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      color: Colors.blueGrey,
+                      color: textColor,
                       fontSize: 24,
                     ),
                   ),
@@ -129,7 +133,7 @@ class HomePage extends StatelessWidget {
                         5. TL – FCFS (Unique)''',
                     textAlign: TextAlign.start,
                     style: TextStyle(
-                      color: Colors.blueGrey,
+                      color: textColor,
                     ),
                   ),
                 ]

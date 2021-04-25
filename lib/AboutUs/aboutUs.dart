@@ -15,7 +15,7 @@ class AboutUs extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.only(left: 8,top: 10,right: 8),
                   child: Text("About Us",
-                    style: TextStyle(color: Colors.blueGrey, fontSize: 35),
+                    style: TextStyle(color: textColor, fontSize: 35),
                   ),
                 ),
               ),
@@ -29,7 +29,7 @@ class AboutUs extends StatelessWidget {
                     "-> This project is made with the motive to help the user get a proper understanding of the CPU Scheduling Algorithms along with modern visualizations for a better grasp and ultimate experience.\n\n"
                     "-> We are currently in our Sophomore year pursuing our Bachelor's with majors in Computer Science  in PDEU (Pandit Deendayal Energy University).\n\n"
                     "-> Designed and Implemented by:",
-                    style: TextStyle(color: Colors.blueGrey, fontSize: 20),
+                    style: TextStyle(color: textColor, fontSize: 20),
                   ),
                 ),
               ),
@@ -52,7 +52,7 @@ class AboutUs extends StatelessWidget {
                                 color: darkButtonColor)),
                         child: Text(
                           'Manav Bhavsar\n19BCP077',
-                          style: TextStyle(color: Colors.blueGrey, fontSize: 18),
+                          style: TextStyle(color: textColor, fontSize: 18),
                         ),
                       ),
                     ),
@@ -71,7 +71,7 @@ class AboutUs extends StatelessWidget {
                               color: darkButtonColor)),
                       child: Text(
                         'Ravi Patel\n19BCP172D',
-                        style: TextStyle(color: Colors.blueGrey, fontSize: 18),
+                        style: TextStyle(color: textColor, fontSize: 18),
                       ),
                     ),
                     SizedBox(height: 50,),
@@ -84,7 +84,7 @@ class AboutUs extends StatelessWidget {
                               color: darkButtonColor)),
                       child: Text(
                         'Mayank Gupta\n19BCP079',
-                        style: TextStyle(color: Colors.blueGrey, fontSize: 18),
+                        style: TextStyle(color: textColor, fontSize: 18),
                       ),
                     ),
                     SizedBox(height: 50,),
@@ -97,7 +97,7 @@ class AboutUs extends StatelessWidget {
                               color: darkButtonColor)),
                       child: Text(
                         'Dhrumil Shah\n19BCP164D',
-                        style: TextStyle(color: Colors.blueGrey, fontSize: 18),
+                        style: TextStyle(color: textColor, fontSize: 18),
                       ),
                     ),
                   ],
@@ -115,7 +115,7 @@ class AboutUs extends StatelessWidget {
                               color: darkButtonColor)),
                       child: Text(
                         'Shreya Srivastava\n19BCP123',
-                        style: TextStyle(color: Colors.blueGrey, fontSize: 18),
+                        style: TextStyle(color: textColor, fontSize: 18),
                       ),
                     ),
                   ],
@@ -129,7 +129,7 @@ class AboutUs extends StatelessWidget {
                   padding: const EdgeInsets.only(left: 23),
                   child: Text(
                     'Check out our project on github:  ',
-                    style: TextStyle(color: Colors.blueGrey, fontSize: 15),
+                    style: TextStyle(color: textColor, fontSize: 15),
                   ),
                 ),
                 InkWell(

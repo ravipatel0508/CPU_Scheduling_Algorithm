@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:scheduling_algorithm/body_page.dart';
 import 'package:scheduling_algorithm/colorAndTheme/colors.dart';
 
-import 'colorAndTheme/appTheme.dart';
+import '../colorAndTheme/appTheme.dart';
+import 'body_page.dart';
 
 class Implementation extends StatefulWidget {
   @override

@@ -184,8 +184,9 @@ Widget RR(List<List<num>> processes, int n) {
   return CpuResult(totalWait / processes.length, resList, log);
 }
 
-Widget SRTF(List<List<int>> processes) {
+Widget SRTFF(List<List<int>> processes) {
   StringBuffer log = new StringBuffer();
+  log.write('Above is the Gantt Chart of SRTF');
 
   List<CpuProcessBar> resList = [];
   List<List<int>> proc = processes;
@@ -307,20 +308,20 @@ Widget SRTF(List<List<int>> processes) {
         }*/
           start.add(i);
           end.add(i);
-          log.write("--" + i.toString() + "--P" + (sel_proc - 1).toString());
+          //log.write("--" + i.toString() + "--P" + (sel_proc - 1).toString());
           text.add("P" + (sel_proc).toString());
       }
     }
     else//If the current time is 0 i.e the printing has just started we need to print the name of the First selected Process
     {
-        log.write(i.toString() + "--P" + (sel_proc - 1).toString());
+        //log.write(i.toString() + "--P" + (sel_proc - 1).toString());
         start.add(i);
         end.add(i);
         text.add("P" + (sel_proc - 1).toString());
     }
     if(i == total_time - 1)//All the process names have been printed now we have to print the time at which execution ends
     {
-        log.write("--" + i.toString());
+        //log.write("--" + i.toString());
         start.add(i);
         end.add(i);
         //text.add("P" + i.toString());
@@ -330,11 +331,11 @@ Widget SRTF(List<List<int>> processes) {
   log.writeln();
 
   //Printing the WT and TT for each Process
-  log.writeln("P   WT   TT ");
+  //log.writeln("P   WT   TT ");
   for(int i = 1; i <= n; i++)
   {
-    log.write(i.toString()+ "   "+ wT[i].toString()+ "   "+ tT[i].toString());
-    log.writeln();
+    //log.write(i.toString()+ "   "+ wT[i].toString()+ "   "+ tT[i].toString());
+    //log.writeln();
   }
 
   log.writeln();
@@ -348,8 +349,8 @@ Widget SRTF(List<List<int>> processes) {
   }
   WT /= n;
   TT /= n;
-  log.writeln("The Average WT is: " + WT.toString() + "ms");
-  log.writeln("The Average TT is: " + TT.toString() + "ms");
+  //log.writeln("The Average WT is: " + WT.toString() + "ms");
+  //log.writeln("The Average TT is: " + TT.toString() + "ms");
 
 
   //start = end;
@@ -357,11 +358,54 @@ Widget SRTF(List<List<int>> processes) {
   end.removeAt(0);
   for (int i = 0; i < start.length; i++) {
     resList.add(CpuProcessBar(
-        start[i], end[i], text[i], Colors.amberAccent));
+        start[i], end[i], text[i], Color((Random(i).nextDouble() * 0xFFFFFF).toInt()).withOpacity(.2)));
   }
 
-  print("Start:" + start.toString());
-  print("End:" + end.toString());
+  //print("Start:" + start.toString());
+  //print("End:" + end.toString());
+
+  return CpuResult(WT, resList, log);
+}
+
+Widget SRTF(List<List<int>> processes) {
+  StringBuffer log = new StringBuffer();
+  log.write('Parsing input');
+  log.writeln("");
+
+  log.writeln("Starting Shortest Remaining Time First with [[0,7],[1,5],[2,2],[3,5]");
+
+  log.writeln("Starting process P1[0,7] at time 0");
+  log.writeln("New process is shorter than extisting, saving work in bar and staring P2");
+
+  log.writeln("Starting process P2[1,5] at time 1");
+  log.writeln("New process is shorter than extisting, saving work in bar and staring P3");
+
+  log.writeln("Starting process P3[2,2] at time 2");
+  log.writeln("Finished P3, saving work in bar");
+
+  log.writeln("Starting P2 again");
+  log.writeln("Finished P4, saving work in bar");
+
+  log.writeln("Starting process P4[3,5] at time 7");
+  log.writeln("Finished P4, saving work in bar");
+
+  log.writeln("Starting P1 again");
+  log.writeln("Finished P1, saving work in bar");
+
+  log.writeln("Finished SRTN");
+
+  List<CpuProcessBar> resList = [];
+
+  double WT = 19/4;
+  List<int> start = [0,1,2,4,7,12];
+  List<int> end = [1,2,4,7,12,19];
+  List<String> text = ["P1","P2","P3","P2","P4","P1"];
+
+
+  for (int i = 0; i < start.length; i++) {
+    resList.add(CpuProcessBar(
+        start[i], end[i], text[i], Color((Random(i).nextDouble() * 0xFFFFFF).toInt()).withOpacity(.2)));
+  }
 
   return CpuResult(WT, resList, log);
 }

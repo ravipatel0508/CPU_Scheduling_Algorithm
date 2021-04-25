@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
-import 'file:///E:/FlutterProject/scheduling_algorithm/lib/colorAndTheme/colors.dart';
+
+import 'colors.dart';
 
 bool light = false;
 ThemeData darkTheme = ThemeData(

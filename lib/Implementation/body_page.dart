@@ -3,11 +3,13 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:scheduling_algorithm/Information/information.dart';
+import 'package:scheduling_algorithm/colorAndTheme/appTheme.dart';
+import 'package:scheduling_algorithm/colorAndTheme/colors.dart';
 
-import 'Chart/Visulization_Chart.dart';
-import 'colorAndTheme/appTheme.dart';
-import 'colorAndTheme/colors.dart';
-import 'ganttChart/GantChart.dart';
+import 'compareGraph.dart';
+import 'visualizationChart.dart';
+import 'GantChart.dart';
 
 enum DataChoice { First, Second, Third, Own }
 const int RR_WINDOW = 3;
@@ -234,7 +236,7 @@ class _BodyPageState extends State<BodyPage> {
                                         shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                                             RoundedRectangleBorder(
                                                 borderRadius: BorderRadius.circular(18.0),
-                                                side: BorderSide(color: light ? lightButtonColor : darkButtonColor)
+                                                side: BorderSide(color: light ? lightButtonColor : darkButtonColor,width: 3)
                                             )
                                         )
                                     ),
@@ -376,7 +378,7 @@ class TableErrorContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: light ? Colors.blue[100] : Colors.deepPurple[300],
+      color: light ? Colors.blue[100] : Color(0xff6d7e7c),
       alignment: Alignment.center,
       child: Text(text!),
     );

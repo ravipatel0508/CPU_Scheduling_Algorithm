@@ -2,8 +2,6 @@ import 'dart:collection';
 
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:scheduling_algorithm/colorAndTheme/appTheme.dart';
-import 'package:scheduling_algorithm/colorAndTheme/colors.dart';
 
 
 bool showAvg = true;
@@ -232,7 +230,7 @@ Widget TL_FCFS_Chart(List<List<num>> processes) {
   return lineData(chartLineData, totalTime, processes.length, (totalWait / processes.length).toDouble());
 }
 
-Widget SRTF_Chart(List<List<int>> processes) {
+Widget SRTFF_Chart(List<List<int>> processes) {
   StringBuffer log = new StringBuffer();
 
   List<FlSpot> chartLineData = [];
@@ -362,6 +360,22 @@ Widget SRTF_Chart(List<List<int>> processes) {
   return lineData(chartLineData, total_time - 1, proc.length - 1, WT);
 }
 
+Widget SRTF_Chart(List<List<int>> processes) {
+  StringBuffer log = new StringBuffer();
+
+  List<FlSpot> chartLineData = [];
+  chartLineData.add(FlSpot(0, 0));
+
+  List<int> start = [0,1,2,4,7,12];
+  List<int> end = [1,2,4,7,12,19];
+  List<int> text = [1,2,3,2,4,1];
+  double WT = 19/4;
+  for (int i = 0; i < start.length; i++) {
+    chartLineData.add(FlSpot(end[i].toDouble(), text[i].toDouble()));
+  }
+  return lineData(chartLineData, 19, 4, WT);
+}
+
 lineData(List<FlSpot> chartLineData, num totalTime, int processLength, double waitingTime) {
 
   final List<Color> gradientColors = [
@@ -417,7 +431,7 @@ class _ChartState extends State<Chart> {
           padding: EdgeInsets.all(25.0),
           decoration: BoxDecoration(color: Color(0xff020227)),
           child: LineChart(showAvg ? LineChartData(
-            lineTouchData: LineTouchData(enabled: false),
+            lineTouchData: LineTouchData(enabled: true),
             gridData: FlGridData(
               show: true,
               drawVerticalLine: true,
@@ -566,8 +580,8 @@ LineChartData avgData(double avgWT, double totalTime) {
     lineBarsData: [
       LineChartBarData(
         spots: [
-          FlSpot(0, avgWT - 1),
-          FlSpot(totalTime, avgWT - 1)
+          FlSpot(0, avgWT),
+          FlSpot(totalTime, avgWT)
         ],
         isCurved: true,
         colors: [
